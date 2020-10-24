@@ -1,7 +1,9 @@
 Introduction
 ============
+介绍
 
 mpv provides access to its internals via the following means:
+mpv 提供了以下方式来访问内部
 
 - options
 - commands
@@ -10,6 +12,7 @@ mpv provides access to its internals via the following means:
 - hooks
 
 The sum of these mechanisms is sometimes called command interface.
+所有这些方式总称 command interface
 
 All of these are important for interfacing both with end users and API users
 (which include Lua scripts, libmpv, and the JSON IPC). As such, they constitute
@@ -17,6 +20,7 @@ a large part of the user interface and APIs.
 
 Also see compatibility.rst.
 
+这篇文档列出了改动纪录
 This document lists changes to them. New changes are added to the top. Usually,
 only incompatible or important changes are mentioned. New options/commands/etc.
 are not always listed.

@@ -33,6 +33,8 @@ extern "C" {
  *
  * Warning: this API is deprecated. A very similar API is provided by render.h
  * and render_gl.h. The deprecated API is emulated with the new API.
+ * 警告：这个 API 不用了，因为  render.h 和 render_gl.h 替代了这个文件
+ * 这个旧 API 甚至是用新 API 模拟的
  *
  * This API can be used to make mpv render into a foreign OpenGL context. It
  * can be used to handle video display.

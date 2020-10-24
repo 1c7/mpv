@@ -1,5 +1,6 @@
 VIDEO OUTPUT DRIVERS
 ====================
+视频输出驱动
 
 Video output drivers are interfaces to different video output facilities. The
 syntax is:
@@ -79,6 +80,8 @@ Available video output drivers are:
 ``vdpau`` (X11 only)
     Uses the VDPAU interface to display and optionally also decode video.
     Hardware decoding is used with ``--hwdec=vdpau``.
+    VDPAU 是什么？
+    VDPAU 是一个最初由NVIDIA开发的针对其GeForce 8系列以及更高系列的GPU ，在UNIX和类UNIX系统下基于X窗口系统下的开源库和API。 VDPAU的API可以让视频播放器把一部分的视频解码和视频图像补偿交给GPU
 
     .. note::
 
@@ -177,9 +180,11 @@ Available video output drivers are:
 
 ``direct3d`` (Windows only)
     Video output driver that uses the Direct3D interface.
+    用 Direct3D 是 Windows 独有的
 
     .. note:: This driver is for compatibility with systems that don't provide
               proper OpenGL drivers, and where ANGLE does not perform well.
+    这个 note 其实就是说能用 OpenGL 就不要用这个了，留这个是为了兼容而已
 
     The following global options are supported by this video output:
 
@@ -232,6 +237,7 @@ Available video output drivers are:
     General purpose, customizable, GPU-accelerated video output driver. It
     supports extended scaling methods, dithering, color management, custom
     shaders, HDR, and more.
+    通用，可定制，GPU加速的视频输出
 
     See `GPU renderer options`_ for options specific to this VO.
 
@@ -261,6 +267,7 @@ Available video output drivers are:
     SDL 2.0+ Render video output driver, depending on system with or without
     hardware acceleration. Should work on all platforms supported by SDL 2.0.
     For tuning, refer to your copy of the file ``SDL_hints.h``.
+    SDL 2.0+ 输出
 
     .. note:: This driver is for compatibility with systems that don't provide
               proper graphics drivers.
@@ -277,6 +284,7 @@ Available video output drivers are:
     Intel VA API video output driver with support for hardware decoding. Note
     that there is absolutely no reason to use this, other than compatibility.
     This is low quality, and has issues with OSD.
+    这个输出不要用了，兼容留着而已，留着给垃圾系统用的
 
     .. note:: This driver is for compatibility with crappy systems. You can
               use vaapi hardware decoding with ``--vo=gpu`` too.
@@ -332,6 +340,7 @@ Available video output drivers are:
     Color ASCII art video output driver that works on a text console.
 
     .. note:: This driver is a joke.
+    虽然文档说是 joke 但我记得看过 example，貌似用是能用的，只是实用性等于0而已
 
 ``tct``
     Color Unicode art video output driver that works on a text console.
@@ -366,6 +375,7 @@ Available video output drivers are:
 ``image``
     Output each frame into an image file in the current directory. Each file
     takes the frame number padded with leading zeros as name.
+    把每一帧作为图片文件输出到当前目录下
 
     The following global options are supported by this video output:
 
@@ -400,16 +410,19 @@ Available video output drivers are:
         Specify the directory to save the image files to (default: ``./``).
 
 ``libmpv``
+    libmpv 输出，
     For use with libmpv direct embedding. As a special case, on OS X it
     is used like a normal VO within mpv (cocoa-cb). Otherwise useless in any
     other contexts.
     (See ``<mpv/render.h>``.)
+    cocoa-cb 是什么？
 
     This also supports many of the options the ``gpu`` VO has, depending on the
     backend.
 
 ``rpi`` (Raspberry Pi)
     Native video output on the Raspberry Pi using the MMAL API.
+    这个选项用不着了，抛弃了
 
     This is deprecated. Use ``--vo=gpu`` instead, which is the default and
     provides the same functionality. The ``rpi`` VO will be removed in

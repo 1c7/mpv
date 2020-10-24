@@ -23,16 +23,17 @@ extern "C" {
 #endif
 
 /**
- * OpenGL backend
+ * OpenGL backend | OpenGL 后端
  * --------------
  *
  * This header contains definitions for using OpenGL with the render.h API.
  *
- * OpenGL interop
+ * OpenGL interop | interop 是什么意思？(互操作)
  * --------------
  *
  * The OpenGL backend has some special rules, because OpenGL itself uses
  * implicit per-thread contexts, which causes additional API problems.
+ * OpenGL 后端有一些特殊的规则，因为它有隐形的线程上下文，可能会造成 API  问题
  *
  * This assumes the OpenGL context lives on a certain thread controlled by the
  * API user. All mpv_render_* APIs have to be assumed to implicitly use the

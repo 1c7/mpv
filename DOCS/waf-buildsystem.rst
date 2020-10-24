@@ -1,11 +1,14 @@
 waf build system overview
 =========================
+waf 构建系统概览
 
 mpv's new build system is based on waf and it should completely replace the
 custom ./configure + Makefile based system inherited from MPlayer.
+是基于 waf 的，完全替代了 .configure + Makefile 的组合（MPlayer 那种）
 
 Goals and the choice of waf
 ===========================
+为什么选 waf
 
 The new system comes with some goals, which can be summed up as: be as good as
 the old one at what it did well (customizability) and fix some of it's major
@@ -13,6 +16,7 @@ shortcomings:
 
 1) The build system must be uniform in how it handles any single feature check.
    Repetition and boilerplate have to be avoided.
+   // feature check 是什么？
 
    When adding a new feature using the old configure, one had to add a fair
    amount of code to the shell script to do option parsing, detection of the
@@ -23,6 +27,7 @@ shortcomings:
 2) --enable-feature has to be overridden by the user and helps them understand that
    they have libraries missing and should install them for the feature to be
    enabled.
+   --enable-feature  必须得被用户覆盖，
 
 3) Must be customizable, hackable, pleasant to the developer eyes and to work
    with in general.
@@ -40,9 +45,11 @@ What puts waf apart from CMake and autotools, is that projects using it use
 Python to program their build system. Also while the Waf Book shows really
 simple API usages, you can write your own build system on top of waf that is
 tailored to the project's specific needs.
+waf 和 CMake 以及其他 build 工具区分点是，用 Python 写 build system   
 
 mpv's custom configure step on top of waf
 =========================================
+mpv 在 waf 之上的自定义配置步骤   
 
 To some extents mpv has a custom build system written on top of waf. This
 document will not go over the standard waf behaviour as that is documented in
@@ -74,19 +81,23 @@ special characters are replaced with underscores. This happens in
 
 Mandatory fields:
 -----------------
+必须有的字段
 
 ``name``: indicates the unique identifier used by the custom dependency code
 to refer to a feature. If the unique identifier is prepended with ``--``
 the build system will also generate options for ``./waf configure`` so that
 the feature can be enabled and disabled.
+前头要加 -- 两个横线
 
 ``desc``: this is the textual representation of the feature used in the
 interactions with the users.
+文本描述，当和用户交互时显示
 
 ``func``: function that will perform the check. These functions are defined in
 ``waftools/checks``. The reusable checks are all functions that return
 functions. The return functions will then be applied using waf's configuration
 context.
+负责执行检查的函数，这些函数定义在 waftools/checks 里
 
 The source code for the reusable checks is a bit convoluted, but it should be
 easy to pick up their usage from the ``wscript``. Their signature mirrors
@@ -94,6 +105,7 @@ the semantics of some of the shell functions used in mplayer.
 
 If someone expresses some interest, I will extend this document with official
 documentation for each check function.
+如果有人有兴趣，会扩展这篇文档
 
 Optional fields
 ---------------
@@ -102,20 +114,25 @@ Optional fields
 other features as defined in the ``name`` field (minus the eventual leading
 ``--``). All of the dependencies must be satisfied. If they are not the check
 will be skipped without even running ``func``.
+这个功能的依赖，填其他功能的 name，可以是一个 list。
 
 ``deps_any``: like deps but it is satisfied even if only one of the dependencies
 is satisfied. You can think of ``deps`` as a 'and' condition and ``deps_any``
 as a 'or' condition.
+只要有其中一个满足就行，可以把 deps 当做是 and 判断，deps_any 是 or 判断
 
 ``deps_neg``: like deps but it is satisfied when none of the dependencies is
 satisfied.
+可以当做是 not 
 
 ``req``: defaults to False. If set to True makes this feature a hard
 dependency of mpv (configuration will fail if autodetection fails). If set to
 True you must also provide ``fmsg``.
+是否必须
 
 ``fmsg``: string with the failure message in case a required dependency is not
 satisfied.
+如果依赖不满足的 failure message（错误信息）
 
 ``os_specific_checks``: this takes a dictionary that has ``os-`` dependencies
 as keys (such as ``os-win32``), and by values has another dictionary that is

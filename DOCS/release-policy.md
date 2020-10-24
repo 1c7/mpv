@@ -1,6 +1,8 @@
 Release Policy
 ==============
 
+每个月一次或者两次，master 分支发布一个版本
+（省略关于版本命名的一段话）
 Once or twice a month, a new release is cut off of the master branch and is
 assigned a 0.X.Y version number, where X is incremented each time a release
 contains breaking changes, such as changed options or added/removed features,
@@ -17,6 +19,7 @@ Releases other than the latest release are unsupported and unmaintained.
 
 Release procedure
 -----------------
+发布新版的操作流程
 
 While on master:
 

@@ -1,4 +1,5 @@
 This file intends to give a big picture overview of how mpv is structured.
+技术概览
 
 player/*.c:
     Essentially makes up the player applications, including the main() function
@@ -93,6 +94,7 @@ player/core.h:
     Data structures and function prototypes for most of player/*.c. They are
     usually not accessed by other parts of mpv for the sake of modularization.
 
+// 实现客户端 API
 player/client.c:
     This implements the client API (libmpv/client.h). For the most part, this
     just calls into other parts of the player. This also manages a ringbuffer
@@ -189,6 +191,7 @@ demux/:
     cache, which is implemented as a list of packets. The cache is complex
     because it support seeking, multiple ranges, prefetching, and so on.
 
+音视频解码相关，以及视频滤镜
 video/:
     This contains several things related to audio/video decoding, as well as
     video filters.
@@ -196,6 +199,7 @@ video/:
     mp_image.h and img_format.h define how mpv stores decoded video frames
     internally.
 
+视频解码器
 video/decode/:
     vd_*.c are video decoders. (There's only vd_lavc.c left.) dec_video.c
     handles most of connecting the frontend with the actual decoder.
@@ -207,6 +211,7 @@ video/filter/:
     inserted if the video output can't handle the video format used by the
     decoder.
 
+视频输出
 video/out/:
     Video output. They also create GUI windows and handle user input. In most
     cases, the windowing code is shared among VOs, like x11_common.c for X11 and
@@ -245,6 +250,7 @@ audio/out/:
     Note that mpv synchronizes the video to the audio. That's the reason
     why buggy audio drivers can have a bad influence on playback quality.
 
+字幕和 OSD 渲染
 sub/:
     Contains subtitle and OSD rendering.
 
@@ -325,6 +331,7 @@ authors will have the same issues as described here), or don't even have a real
 concept for dealing with OOM (OpenGL).
 
 libmpv is often used by GUIs, which I predict always break if OOM happens.
+libmpv 一般被 GUI 拿来用
 
 Last but not least, OSes like Linux use "overcommit", which basically means that
 your program may crash any time OOM happens, even if it doesn't use malloc() at

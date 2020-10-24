@@ -23,34 +23,47 @@ extern "C" {
 #endif
 
 /**
- * Overview
+ * Overview，总览
  * --------
  *
  * This API can be used to make mpv render using supported graphic APIs (such
  * as OpenGL). It can be used to handle video display.
+ * 这个 API 可以让 mpv 用支持的图形  API  进行渲染（比如 OpenGL)
+ * 可以用于视频显示
  *
  * The renderer needs to be created with mpv_render_context_create() before
  * you start playback (or otherwise cause a VO to be created). Then (with most
  * backends) mpv_render_context_render() can be used to explicitly render the
  * current video frame. Use mpv_render_context_set_update_callback() to get
  * notified when there is a new frame to draw.
+ * 
+ * 这个渲染器 需要用 mpv_render_context_create() 创建
+ * 然后 mpv_render_context_render() 用来渲染当前视频帧
+ * 用 mpv_render_context_set_update_callback() 接收通知，有 new frame 可以绘制了
  *
  * Preferably rendering should be done in a separate thread. If you call
  * normal libmpv API functions on the renderer thread, deadlocks can result
  * (these are made non-fatal with timeouts, but user experience will obviously
  * suffer). See "Threading" section below.
+ * 
+ * 最好情况下渲染应该用单独的线程来做
+ * 请看底下的 "Threading" 部分
  *
  * You can output and embed video without this API by setting the mpv "wid"
  * option to a native window handle (see "Embedding the video window" section
  * in the client.h header). In general, using the render API is recommended,
  * because window embedding can cause various issues, especially with GUI
  * toolkits and certain platforms.
+ * 
+ * 建议用这个 render API，因为用  window embedding 有各种问题
  *
  * Supported backends
  * ------------------
  *
  * OpenGL: via MPV_RENDER_API_TYPE_OPENGL, see render_gl.h header.
  * Software: via MPV_RENDER_API_TYPE_SW, see section "Software renderer"
+ * 
+ * 支持2个后端，OpenGL 和软件
  *
  * Threading
  * ---------

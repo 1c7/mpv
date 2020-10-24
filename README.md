@@ -148,61 +148,6 @@ or cross-compile from Linux with MinGW. See
 [Windows compilation][windows_compilation].
 
 
-## Release cycle
-
-Every other month, an arbitrary git snapshot is made, and is assigned
-a 0.X.0 version number. No further maintenance is done.
-
-The goal of releases is to make Linux distributions happy. Linux distributions
-are also expected to apply their own patches in case of bugs and security
-issues.
-
-Releases other than the latest release are unsupported and unmaintained.
-
-See the [release policy document][release-policy] for more information.
-
-## Bug reports
-
-
-Please use the [issue tracker][issue-tracker] provided by GitHub to send us bug
-reports or feature requests. Follow the template's instructions or the issue
-will likely be ignored or closed as invalid.
-
-Using the bug tracker as place for simple questions is fine but IRC is
-recommended (see [Contact](#Contact) below).
-
-## Contributing
-
-
-Please read [contribute.md][contribute.md].
-
-For small changes you can just send us pull requests through GitHub. For bigger
-changes come and talk to us on IRC before you start working on them. It will
-make code review easier for both parties later on.
-
-You can check [the wiki](https://github.com/mpv-player/mpv/wiki/Stuff-to-do)
-or the [issue tracker](https://github.com/mpv-player/mpv/issues?q=is%3Aopen+is%3Aissue+label%3A%22feature+request%22)
-for ideas on what you could contribute with.
-
-## License
-
-GPLv2 "or later" by default, LGPLv2.1 "or later" with `--enable-lgpl`.
-See [details.](https://github.com/mpv-player/mpv/blob/master/Copyright)
-
-## History
-
-This software is based on the MPlayer project. Before mpv existed as a project,
-the code base was briefly developed under the mplayer2 project. For details,
-see the [FAQ][FAQ].
-
-## Contact
-
-
-Most activity happens on the IRC channel and the github issue tracker.
-
-- **GitHub issue tracker**: [issue tracker][issue-tracker] (report bugs here)
-- **User IRC Channel**: `#mpv` on `irc.freenode.net`
-- **Developer IRC Channel**: `#mpv-devel` on `irc.freenode.net`
 
 [FAQ]: https://github.com/mpv-player/mpv/wiki/FAQ
 [releases]: https://github.com/mpv-player/mpv/releases

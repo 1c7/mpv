@@ -1,6 +1,8 @@
 Introduction
 ============
 
+这个文件列出了所有改动
+libmpv 的改动  
 This file lists all changes that can cause compatibility issues when using
 mpv through the client API (libmpv and ``client.h``). Since the client API
 interfaces to input handling (commands, properties) as well as command line

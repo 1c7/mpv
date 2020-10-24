@@ -33,12 +33,16 @@ extern "C" {
 /**
  * Mechanisms provided by this API
  * -------------------------------
+ * 这个 API 提供的机制
  *
  * This API provides general control over mpv playback. It does not give you
  * direct access to individual components of the player, only the whole thing.
  * It's somewhat equivalent to MPlayer's slave mode. You can send commands,
  * retrieve or set playback status or settings with properties, and receive
  * events.
+ * 这个 API 提供了控制 mpv 的能力，不能直接访问各个独立组件，只能作为一个整体来用
+ * 类似于 mplayer 的 slave 模式，可以发送命令，获取或者设置 playback 状态
+ * 或者设置属性，以及接收事件
  *
  * The API can be used in two ways:
  * 1) Internally in mpv, to provide additional features to the command line
@@ -47,6 +51,10 @@ extern "C" {
  *    part of the player at compilation time.)
  * 2) Using mpv as a library with mpv_create(). This basically allows embedding
  *    mpv in other applications.
+ * 
+ * 这个 API 有两种用法：
+ * 1) mpv 的内部使用
+ * 2) 把 mpv 当做库使用，mpv_create()
  *
  * Documentation
  * -------------
@@ -56,17 +64,22 @@ extern "C" {
  * options/commands/properties, which can be accessed through this API.
  * Essentially everything is done with them, including loading a file,
  * retrieving playback progress, and so on.
+ * 
+ * 这个 libmpv C API 的文档直接写在这里，注意大部分的实际交互
+ * 是用  options/commands/properties 来实现的，这些都可以用这个 API 来访问。
  *
  * These are documented elsewhere:
  *      * http://mpv.io/manual/master/#options
  *      * http://mpv.io/manual/master/#list-of-input-commands
  *      * http://mpv.io/manual/master/#properties
+ * 别的地方也有文档
  *
  * You can also look at the examples here:
  *      * https://github.com/mpv-player/mpv-examples/tree/master/libmpv
  *
  * Event loop
  * ----------
+ * 时间循环
  *
  * In general, the API user should run an event loop in order to receive events.
  * This event loop should call mpv_wait_event(), which will return once a new
@@ -74,10 +87,14 @@ extern "C" {
  * usage in other event loops (e.g. GUI toolkits) with the
  * mpv_set_wakeup_callback() function, and then polling for events by calling
  * mpv_wait_event() with a 0 timeout.
+ * 一般来说，API  用户应该跑一个 event loop 来接收时间。
+ * 这个 event loop 应该调用 mpv_wait_event()
  *
  * Note that the event loop is detached from the actual player. Not calling
  * mpv_wait_event() will not stop playback. It will eventually congest the
  * event queue of your API handle, though.
+ * 注意这个 event loop 是和实际播放器分开的
+ * 不调用也不会停止播放
  *
  * Synchronous vs. asynchronous calls
  * ----------------------------------
@@ -87,6 +104,7 @@ extern "C" {
  * an unbounded time (e.g. if network is slow or unresponsive). Asynchronous
  * calls just queue operations as requests, and return the result of the
  * operation as events.
+ * 允许同步和异步调用
  *
  * Asynchronous calls
  * ------------------
@@ -95,37 +113,46 @@ extern "C" {
  * requests instantly, and get replies as events at a later point. The
  * requests are made with functions carrying the _async suffix, and replies
  * are returned by mpv_wait_event() (interleaved with the normal event stream).
+ * 异步函数，可以马上发请求，然后接收到事件
+ * 异步函数后缀 _async
+ * mpv_wait_event() 返回事件
  *
  * A 64 bit userdata value is used to allow the user to associate requests
  * with replies. The value is passed as reply_userdata parameter to the request
  * function. The reply to the request will have the reply
  * mpv_event->reply_userdata field set to the same value as the
  * reply_userdata parameter of the corresponding request.
+ * 可以通过原样传递和返回一个值，给请求和响应之间建立起关联
  *
  * This userdata value is arbitrary and is never interpreted by the API. Note
  * that the userdata value 0 is also allowed, but then the client must be
  * careful not accidentally interpret the mpv_event->reply_userdata if an
  * event is not a reply. (For non-replies, this field is set to 0.)
+ * 这个 userdata 是一个随意值，API 不会解读它然后做任何操作
  *
  * Asynchronous calls may be reordered in arbitrarily with other synchronous
  * and asynchronous calls. If you want a guaranteed order, you need to wait
  * until asynchronous calls report completion before doing the next call.
+ * 如果想确保顺序
  *
  * See also the section "Asynchronous command details" in the manpage.
  *
- * Multithreading
+ * Multithreading 多线程
  * --------------
  *
  * The client API is generally fully thread-safe, unless otherwise noted.
  * Currently, there is no real advantage in using more than 1 thread to access
  * the client API, since everything is serialized through a single lock in the
  * playback core.
+ * API 都是线程安全的，除非特别标注.
+ * 用多线程访问 API 没有任何优势
  *
- * Basic environment requirements
+ * Basic environment requirements | 基本环境要求
  * ------------------------------
  *
  * This documents basic requirements on the C environment. This is especially
  * important if mpv is used as library with mpv_create().
+ * 特别重要，
  *
  * - The LC_NUMERIC locale category must be set to "C". If your program calls
  *   setlocale(), be sure not to use LC_ALL, or if you do, reset LC_NUMERIC
@@ -135,9 +162,13 @@ extern "C" {
  *   xlib users within the same process. This might confuse GUI toolkits.
  * - mpv uses some other libraries that are not library-safe, such as Fribidi
  *   (used through libass), ALSA, FFmpeg, and possibly more.
+ * - mpv 用的其他库不是 library-safe 的，这是什么意思？是不是写错了？
+ * 
  * - The FPU precision must be set at least to double precision.
  * - On Windows, mpv will call timeBeginPeriod(1).
  * - On memory exhaustion, mpv will kill the process.
+ * 内存耗尽时, mpv 会自己退出？
+ * 
  * - In certain cases, mpv may start sub processes (such as with the ytdl
  *   wrapper script).
  * - Using UNIX IPC (off by default) will override the SIGPIPE signal handler,
@@ -154,7 +185,7 @@ extern "C" {
  * Encoding of filenames
  * ---------------------
  *
- * mpv uses UTF-8 everywhere.
+ * mpv uses UTF-8 everywhere. 编码
  *
  * On some platforms (like Linux), filenames actually do not have to be UTF-8;
  * for this reason libmpv supports non-UTF-8 strings. libmpv uses what the
@@ -175,6 +206,7 @@ extern "C" {
  * Embedding the video window
  * --------------------------
  *
+ * 建议用 render API
  * Using the render API (in render_cb.h) is recommended. This API requires
  * you to create and maintain an OpenGL context, to which you can render
  * video using a specific API call. This API does not include keyboard or mouse
@@ -189,7 +221,7 @@ extern "C" {
  * discussion here:
  * https://github.com/mpv-player/mpv-examples/tree/master/libmpv#methods-of-embedding-the-video-window
  *
- * Compatibility
+ * Compatibility | 兼容性说明
  * -------------
  *
  * mpv development doesn't stand still, and changes to mpv internals as well as
@@ -261,6 +293,7 @@ typedef struct mpv_handle mpv_handle;
 /**
  * List of error codes than can be returned by API functions. 0 and positive
  * return values always mean success, negative values are always errors.
+ * 错误代码列表，0和正数是成功，负数是失败
  */
 typedef enum mpv_error {
     /**
@@ -369,6 +402,7 @@ typedef enum mpv_error {
 /**
  * Return a string describing the error. For unknown errors, the string
  * "unknown error" is returned.
+ * 输入错误代码，输出字符串描述
  *
  * @param error error number, see enum mpv_error
  * @return A static string describing the error. The string is completely
@@ -380,6 +414,7 @@ const char *mpv_error_string(int error);
  * General function to deallocate memory returned by some of the API functions.
  * Call this only if it's explicitly documented as allowed. Calling this on
  * mpv memory not owned by the caller will lead to undefined behavior.
+ * 释放内存的函数，通用
  *
  * @param data A valid pointer returned by the API, or NULL.
  */
@@ -388,6 +423,7 @@ void mpv_free(void *data);
 /**
  * Return the name of this client handle. Every client has its own unique
  * name, which is mostly used for user interface purposes.
+ * client handle 的名字？每一个都有独特的名字
  *
  * @return The client name. The string is read-only and is valid until the
  *         mpv_handle is destroyed.
@@ -398,8 +434,9 @@ const char *mpv_client_name(mpv_handle *ctx);
  * Return the ID of this client handle. Every client has its own unique ID. This
  * ID is never reused by the core, even if the mpv_handle at hand gets destroyed
  * and new handles get allocated.
+ * 返回 client handle 的 id
  *
- * IDs are never 0 or negative.
+ * IDs are never 0 or negative. 不可能是0或者负数，返回一个正数
  *
  * Some mpv APIs (not necessarily all) accept a name in the form "@<id>" in
  * addition of the proper mpv_client_name(), where "<id>" is the ID in decimal
@@ -416,15 +453,24 @@ int64_t mpv_client_id(mpv_handle *ctx);
  * the mpv instance. This instance is in a pre-initialized state,
  * and needs to be initialized to be actually used with most other API
  * functions.
+ * 创建一个新的 mpv 实例，以及 client API handle 用来控制这个 mpv 实例。
+ * 这个 instance 处于 未初始化 状态
+ * 需要初始化才能用
  *
  * Some API functions will return MPV_ERROR_UNINITIALIZED in the uninitialized
  * state. You can call mpv_set_property() (or mpv_set_property_string() and
  * other variants, and before mpv 0.21.0 mpv_set_option() etc.) to set initial
  * options. After this, call mpv_initialize() to start the player, and then use
  * e.g. mpv_command() to start playback of a file.
+ * 如果未初始化，有些函数会返回 MPV_ERROR_UNINITIALIZED 这个错误
+ * 可以调用 mpv_set_option() 设置一些选项
+ * 然后调用 mpv_initialize() 来初始化
+ * 然后调用 mpv_command() 来播放文件
  *
  * The point of separating handle creation and actual initialization is that
  * you can configure things which can't be changed during runtime.
+ * 把创建 handle 和实际初始化分开。
+ * 这么做的意义是，可以配置一些东西，这些东西在 runtime 是没法改的
  *
  * Unlike the command line player, this will have initial settings suitable
  * for embedding in applications. The following settings are different:

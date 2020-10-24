@@ -1,5 +1,6 @@
 CLI and API compatibility policy
 ================================
+兼容性
 
 Human users and API users rely on the mpv/libmpv/scripting/IPC interface not
 breaking their use case. On the other hand, active development occasionally
@@ -9,6 +10,7 @@ a way that may break.
 This document lists rules when, what, and how incompatible changes can be made.
 It's interesting both for mpv developers, who want to change user-visible parts,
 and mpv users, who want to know what is guaranteed to remain stable.
+这篇文档写的是，做破坏性改动时该怎么办
 
 Any of the rules below may be overridden by statements in more specific
 documentation (for example, if the manpage says that a particular option may be
@@ -134,6 +136,7 @@ command-interface.
 
 libmpv C API
 ------------
+C API
 
 The libmpv client API (such as ``<libmpv/client.h>``) mostly gives access to
 the command interface. The API itself (if looked at as a component separate

@@ -37,7 +37,7 @@ Player
 * ``--keep-open`` option to stop the player from closing the window and
   exiting after playback ends.
 * A client API, that allows embedding **mpv** into applications
-  (see ``libmpv/client.h`` in the sources).
+  (see ``/client.h`` in the sources).
 
 Input
 ~~~~~

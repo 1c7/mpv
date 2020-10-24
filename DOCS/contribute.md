@@ -1,5 +1,6 @@
 How to contribute
 =================
+如何贡献
 
 General
 -------
@@ -7,6 +8,7 @@ General
 The main contact for mpv development is IRC, specifically #mpv
 and #mpv-devel on Freenode. Github is used for code review and
 long term discussions.
+主要联系渠道是 IRC 
 
 Sending patches
 ---------------
@@ -134,6 +136,7 @@ Touching user-visible parts may require updating the mpv docs
 
 Code formatting
 ---------------
+代码格式
 
 mpv uses C99 with K&R formatting, with some exceptions.
 
@@ -248,6 +251,7 @@ Rules for git push access
 
 Push access to the main git repository is handed out on an arbitrary basis. If
 you got access, the following rules must be followed:
+push 权限还挺随意的
 
 - You are expected to follow the general development rules as outlined in this
   whole document.
