@@ -2195,6 +2195,8 @@ static int property_imgparams(struct mp_image_params p, int action, void *arg)
 
     struct m_sub_property props[] = {
         {"pixelformat",     SUB_PROP_STR(mp_imgfmt_to_name(p.imgfmt))},
+        {"hw-pixelformat",  SUB_PROP_STR(mp_imgfmt_to_name(p.hw_subfmt)),
+                            .unavailable = !p.hw_subfmt},
         {"average-bpp",     SUB_PROP_INT(bpp),
                             .unavailable = !bpp},
         {"w",               SUB_PROP_INT(p.w)},
@@ -5688,6 +5690,17 @@ static void cmd_write_watch_later_config(void *p)
     mp_write_watch_later_conf(mpctx);
 }
 
+static void cmd_delete_watch_later_config(void *p)
+{
+    struct mp_cmd_ctx *cmd = p;
+    struct MPContext *mpctx = cmd->mpctx;
+
+    char *filename = cmd->args[0].v.s;
+    if (filename && !*filename)
+        filename = NULL;
+    mp_delete_watch_later_conf(mpctx, filename);
+}
+
 static void cmd_mouse(void *p)
 {
     struct mp_cmd_ctx *cmd = p;
@@ -6238,6 +6251,8 @@ const struct mp_cmd_def mp_cmds[] = {
     },
 
     { "write-watch-later-config", cmd_write_watch_later_config },
+    { "delete-watch-later-config", cmd_delete_watch_later_config,
+        {{"filename", OPT_STRING(v.s), .flags = MP_CMD_OPT_ARG} }},
 
     { "mouse", cmd_mouse, { {"x", OPT_INT(v.i)},
                             {"y", OPT_INT(v.i)},

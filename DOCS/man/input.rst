@@ -724,6 +724,13 @@ Remember to quote string arguments in input.conf (see `Flat command syntax`_).
     Write the resume config file that the ``quit-watch-later`` command writes,
     but continue playback normally.
 
+``delete-watch-later-config [<filename>]``
+    Delete any existing resume config file that was written by
+    ``quit-watch-later`` or ``write-watch-later-config``. If a filename is
+    specified, then the deleted config is for that file; otherwise, it is the
+    same one as would be written by ``quit-watch-later`` or
+    ``write-watch-later-config`` in the current circumstance.
+
 ``stop [<flags>]``
     Stop playback and clear playlist. With default settings, this is
     essentially like ``quit``. Useful for the client API: playback can be
@@ -2299,6 +2306,10 @@ Property list
         The pixel format as string. This uses the same names as used in other
         places of mpv.
 
+    ``video-params/hw-pixelformat``
+        The underlying pixel format as string. This is relevant for some cases
+        of hardware decoding and unavailable otherwise.
+
     ``video-params/average-bpp``
         Average bits-per-pixel as integer. Subsampled planar formats use a
         different resolution, which is the reason this value can sometimes be
@@ -2357,6 +2368,7 @@ Property list
 
         MPV_FORMAT_NODE_MAP
             "pixelformat"       MPV_FORMAT_STRING
+            "hw-pixelformat"    MPV_FORMAT_STRING
             "w"                 MPV_FORMAT_INT64
             "h"                 MPV_FORMAT_INT64
             "dw"                MPV_FORMAT_INT64
