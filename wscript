@@ -3,7 +3,9 @@
 import sys, os, re
 sys.path.insert(0, os.path.join(os.getcwd(), 'waftools'))
 sys.path.insert(0, os.getcwd())
+# 这个 sys.path.insert 是什么意思？
 from shlex import split
+# 引入了什么？
 from waflib.Configure import conf
 from waflib.Tools import c_preproc
 from waflib import Utils
@@ -14,6 +16,7 @@ c_preproc.go_absolute=True # enable system folders
 c_preproc.standard_includes.append('/usr/local/include')
 
 APPNAME = 'mpv'
+# app 名字
 
 """
 Dependency identifiers (for win32 vs. Unix):
@@ -28,6 +31,7 @@ Dependency identifiers (for win32 vs. Unix):
     uwp / HAVE_UWP:                     defined if building for UWP (basic Windows only)
 """
 
+# 构建选项
 build_options = [
     {
         'name': '--lgpl',
@@ -130,6 +134,7 @@ build_options = [
     }
 ]
 
+# 主要依赖
 main_dependencies = [
     {
         'name': 'noexecstack',
@@ -386,6 +391,7 @@ iconv support use --disable-iconv.",
     }
 ]
 
+# libav 依赖？
 libav_dependencies = [
     {
         'name': 'ffmpeg',
@@ -411,6 +417,7 @@ FFmpeg libraries. Git master is recommended."
     }
 ]
 
+# 音频输出
 audio_output_features = [
     {
         'name': '--sdl2-audio',
@@ -459,6 +466,7 @@ audio_output_features = [
     }
 ]
 
+# 视频输出
 video_output_features = [
     {
         'name': '--sdl2-video',
@@ -740,6 +748,7 @@ video_output_features = [
     }
 ]
 
+# 硬件加速
 hwaccel_features = [
     {
         'name': 'videotoolbox-hwaccel',
@@ -790,6 +799,7 @@ hwaccel_features = [
     }
 ]
 
+# 独立功能
 standalone_features = [
     {
         'name': 'win32-executable',
@@ -833,6 +843,7 @@ standalone_features = [
     }
 ]
 
+# 安装目录列表
 _INSTALL_DIRS_LIST = [
     ('confdir', '${SYSCONFDIR}/mpv',  'configuration files'),
     ('zshdir',  '${DATADIR}/zsh/site-functions', 'zsh completion functions'),

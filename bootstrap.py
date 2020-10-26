@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # This script simply downloads waf to the current directory
+# 下载 waf 到当前目录（没有解压或任何其他操作，只是下载）
 
 from __future__ import print_function
 import os, sys, stat, hashlib, subprocess

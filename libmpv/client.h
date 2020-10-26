@@ -303,6 +303,7 @@ typedef enum mpv_error {
      * hardcode the fact that ">= 0" means success.
      */
     MPV_ERROR_SUCCESS           = 0,
+    // 没错误发生，这里提示怎么判断成功，大于等于0就是成功了
     /**
      * The event ringbuffer is full. This means the client is choked, and can't
      * receive any events. This can happen when too many asynchronous requests
@@ -312,63 +313,81 @@ typedef enum mpv_error {
      * could also trigger this, e.g. if events become "lost".)
      */
     MPV_ERROR_EVENT_QUEUE_FULL  = -1,
+    // event ringbuffer 是什么？
+    // 满了为什么要报错
+    // 意思是 client 没法接收更多 event 了
+    // 这种情况一般是发了太多异步请求，然后还没处理完，实际中这种情况估计永远不会发生
+    // 除非 mpv core 莫名其妙卡住了，此时客户端还不断发异步请求
     /**
      * Memory allocation failed.
      */
     MPV_ERROR_NOMEM             = -2,
+    // 分配内存失败
     /**
      * The mpv core wasn't configured and initialized yet. See the notes in
      * mpv_create().
      */
     MPV_ERROR_UNINITIALIZED     = -3,
+    // 还没初始化
     /**
      * Generic catch-all error if a parameter is set to an invalid or
      * unsupported value. This is used if there is no better error code.
      */
     MPV_ERROR_INVALID_PARAMETER = -4,
+    // 无效参数
     /**
      * Trying to set an option that doesn't exist.
      */
     MPV_ERROR_OPTION_NOT_FOUND  = -5,
+    // 如果设置一个不存在的选项就会报这个错
     /**
      * Trying to set an option using an unsupported MPV_FORMAT.
      */
     MPV_ERROR_OPTION_FORMAT     = -6,
+    // 用不支持的 MPV_FORMAT 来设置选项
     /**
      * Setting the option failed. Typically this happens if the provided option
      * value could not be parsed.
      */
     MPV_ERROR_OPTION_ERROR      = -7,
+    // 设置选项时失败，一般是值无法解析
     /**
      * The accessed property doesn't exist.
      */
     MPV_ERROR_PROPERTY_NOT_FOUND = -8,
+    // 属性不存在
     /**
      * Trying to set or get a property using an unsupported MPV_FORMAT.
      */
     MPV_ERROR_PROPERTY_FORMAT   = -9,
+    // 用不支持的 MPV_FORMAT 设置值或取值
     /**
      * The property exists, but is not available. This usually happens when the
      * associated subsystem is not active, e.g. querying audio parameters while
      * audio is disabled.
      */
     MPV_ERROR_PROPERTY_UNAVAILABLE = -10,
+    // 这个属性存在，但是不可用
     /**
      * Error setting or getting a property.
      */
     MPV_ERROR_PROPERTY_ERROR    = -11,
+    // 设或取属性时错误
     /**
      * General error when running a command with mpv_command and similar.
      */
     MPV_ERROR_COMMAND           = -12,
+    // 一般性错误，和 command 相关
     /**
      * Generic error on loading (usually used with mpv_event_end_file.error).
      */
     MPV_ERROR_LOADING_FAILED    = -13,
+    // 和载入相关的一般性错误
     /**
      * Initializing the audio output failed.
      */
     MPV_ERROR_AO_INIT_FAILED    = -14,
+    // 初始化视频输出失败
     /**
      * Initializing the video output failed.
      */
@@ -379,11 +398,13 @@ typedef enum mpv_error {
      * or no streams were selected.
      */
     MPV_ERROR_NOTHING_TO_PLAY   = -16,
+    // 没有音频或视频数据可播放
     /**
      * When trying to load the file, the file format could not be determined,
      * or the file was too broken to open it.
      */
     MPV_ERROR_UNKNOWN_FORMAT    = -17,
+    //载入文件时，文件格式检测不到，或者文件损坏
     /**
      * Generic error for signaling that certain system requirements are not
      * fulfilled.
@@ -397,6 +418,7 @@ typedef enum mpv_error {
      * Unspecified error.
      */
     MPV_ERROR_GENERIC           = -20
+    // 不知道什么错误，反正就是有错
 } mpv_error;
 
 /**
@@ -474,9 +496,13 @@ int64_t mpv_client_id(mpv_handle *ctx);
  *
  * Unlike the command line player, this will have initial settings suitable
  * for embedding in applications. The following settings are different:
+ * 和命令行播放器不同，这个会有初始设置，方便嵌入到程序里，以下是具体不同点：
+ * 
  * - stdin/stdout/stderr and the terminal will never be accessed. This is
  *   equivalent to setting the --no-terminal option.
  *   (Technically, this also suppresses C signal handling.)
+ *   标准输入输出错误
+ * 
  * - No config files will be loaded. This is roughly equivalent to using
  *   --config=no. Since libmpv 1.15, you can actually re-enable this option,
  *   which will make libmpv load config files during mpv_initialize(). If you
@@ -486,10 +512,16 @@ int64_t mpv_client_id(mpv_handle *ctx);
  *      mpv_set_option_string(mpv, "config-dir", "/my/path"); // set config root
  *      mpv_set_option_string(mpv, "config", "yes"); // enable config loading
  *      (call mpv_initialize() _after_ this)
+ *   不载入配置文件
+ * 
  * - Idle mode is enabled, which means the playback core will enter idle mode
  *   if there are no more files to play on the internal playlist, instead of
  *   exiting. This is equivalent to the --idle option.
+ *   待命模式启动，所以不会直接退出
+ * 
  * - Disable parts of input handling.
+ *   关掉一部分输入处理
+ * 
  * - Most of the different settings can be viewed with the command line player
  *   by running "mpv --show-profile=libmpv".
  *
@@ -497,10 +529,14 @@ int64_t mpv_client_id(mpv_handle *ctx);
  * isolated from the command line player's configuration, user settings, and
  * so on. You can re-enable disabled features by setting the appropriate
  * options.
+ * 这里假设了 API 用户希望 mpv 实例严格和命令行播放器的配置区分开来
+ * 要启用的话你可以自己启用
  *
  * The mpv command line parser is not available through this API, but you can
  * set individual options with mpv_set_property(). Files for playback must be
  * loaded with mpv_command() or others.
+ * mpv 命令行解析器在这个 API 里也不能用，
+ * 你可以单独设置选项
  *
  * Note that you should avoid doing concurrent accesses on the uninitialized
  * client handle. (Whether concurrent access is definitely allowed or not has
@@ -510,15 +546,19 @@ int64_t mpv_client_id(mpv_handle *ctx);
  *         can happen in the following situations:
  *         - out of memory
  *         - LC_NUMERIC is not set to "C" (see general remarks)
+ * 返回值：一个 handle
  */
 mpv_handle *mpv_create(void);
 
 /**
  * Initialize an uninitialized mpv instance. If the mpv instance is already
  * running, an error is returned.
+ * 初始化一个未初始化的实例，传入 handle 即可，如果这个实例以及初始化过了
+ * 会返回错误
  *
  * This function needs to be called to make full use of the client API if the
  * client API handle was created with mpv_create().
+ * 需要调用这个函数来使用 client API 的全部能力
  *
  * Only the following options are required to be set _before_ mpv_initialize():
  *      - options which are only read at initialization time:
@@ -530,6 +570,7 @@ mpv_handle *mpv_create(void);
  *        - player-operation-mode
  *        - input-app-events (OSX)
  *      - all encoding mode options
+ * 以下几个选项是必须在初始化之前设置的，只有这时候设置有用
  *
  * @return error code
  */
@@ -538,12 +579,14 @@ int mpv_initialize(mpv_handle *ctx);
 /**
  * Disconnect and destroy the mpv_handle. ctx will be deallocated with this
  * API call.
+ * 删掉 handle
  *
  * If the last mpv_handle is detached, the core player is destroyed. In
  * addition, if there are only weak mpv_handles (such as created by
  * mpv_create_weak_client() or internal scripts), these mpv_handles will
  * be sent MPV_EVENT_SHUTDOWN. This function may block until these clients
  * have responded to the shutdown event, and the core is finally destroyed.
+ * 此时 core player 会被销毁
  */
 void mpv_destroy(mpv_handle *ctx);
 
@@ -599,15 +642,21 @@ void mpv_terminate_destroy(mpv_handle *ctx);
  * context has its own event queue, its own mpv_request_event() state, its own
  * mpv_request_log_messages() state, its own set of observed properties, and
  * its own state for asynchronous operations. Otherwise, everything is shared.
+ * 
+ * mpv_create_client 是用同一个 context 创建新的 client handle
+ * 它有自己的事件队列，自己的 status，除此之外其他都是共享的
  *
  * This handle should be destroyed with mpv_destroy() if no longer
  * needed. The core will live as long as there is at least 1 handle referencing
  * it. Any handle can make the core quit, which will result in every handle
  * receiving MPV_EVENT_SHUTDOWN.
+ * handle 应该用 mpv_destroy() 摧毁
+ * core 只要有一个 handle 还引用它就不会退出
  *
  * This function can not be called before the main handle was initialized with
  * mpv_initialize(). The new handle is always initialized, unless ctx=NULL was
  * passed.
+ * 这个函数必须在主 handle 初始化后使用
  *
  * @param ctx Used to get the reference to the mpv core; handle-specific
  *            settings and parameters are not used.
@@ -637,10 +686,12 @@ mpv_handle *mpv_create_weak_client(mpv_handle *ctx, const char *name);
 /**
  * Load a config file. This loads and parses the file, and sets every entry in
  * the config file's default section as if mpv_set_option_string() is called.
+ * 载入一个配置文件
  *
  * The filename should be an absolute path. If it isn't, the actual path used
  * is unspecified. (Note: an absolute path starts with '/' on UNIX.) If the
  * file wasn't found, MPV_ERROR_INVALID_PARAMETER is returned.
+ * 文件名应该是绝对路径，如果文件没找到，会返回一个 MPV_ERROR_INVALID_PARAMETER 错误
  *
  * If a fatal error happens when parsing a config file, MPV_ERROR_OPTION_ERROR
  * is returned. Errors when setting options as well as other types or errors
@@ -648,6 +699,7 @@ mpv_handle *mpv_create_weak_client(mpv_handle *ctx, const char *name);
  * the resulting error messages with mpv_request_log_messages(). Note that it's
  * possible that some options were successfully set even if any of these errors
  * happen.
+ * 如果解析文件时发生错误，会返回一个 MPV_ERROR_OPTION_ERROR
  *
  * @param filename absolute path to the config file on the local filesystem
  * @return error code
@@ -694,14 +746,17 @@ void mpv_resume(mpv_handle *ctx);
 /**
  * Return the internal time in microseconds. This has an arbitrary start offset,
  * but will never wrap or go backwards.
+ * 返回内部时间，单位毫秒
  *
  * Note that this is always the real time, and doesn't necessarily have to do
  * with playback time. For example, playback could go faster or slower due to
  * playback speed, or due to playback being paused. Use the "time-pos" property
  * instead to get the playback status.
+ * 返回的总是 real time（后面的说明没看懂）
  *
  * Unlike other libmpv APIs, this can be called at absolutely any time (even
  * within wakeup callbacks), as long as the context is valid.
+ * 和其他 API 不同，这个函数可以在任意时刻调用
  *
  * Safe to be called from mpv render API threads.
  */
@@ -711,6 +766,7 @@ int64_t mpv_get_time_us(mpv_handle *ctx);
  * Data format for options and properties. The API functions to get/set
  * properties and options support multiple formats, and this enum describes
  * them.
+ * 数据格式
  */
 typedef enum mpv_format {
     /**
@@ -840,6 +896,7 @@ typedef enum mpv_format {
 
 /**
  * Generic data storage.
+ * 通用数据存储
  *
  * If mpv writes this struct (e.g. via mpv_get_property()), you must not change
  * the data. In some cases (mpv_get_property()), you have to free it with
@@ -945,11 +1002,15 @@ void mpv_free_node_contents(mpv_node *node);
  * Set an option. Note that you can't normally set options during runtime. It
  * works in uninitialized state (see mpv_create()), and in some cases in at
  * runtime.
+ * 设置选项。
+ * 注意大部分选项不能在播放时设置，只能在未初始化时设置。
+ * 个别情况下可以在 runtime 设置
  *
  * Using a format other than MPV_FORMAT_NODE is equivalent to constructing a
  * mpv_node with the given format and data, and passing the mpv_node to this
  * function.
  *
+ * 注意：这个是半弃用状态
  * Note: this is semi-deprecated. For most purposes, this is not needed anymore.
  *       Starting with mpv version 0.21.0 (version 1.23) most options can be set
  *       with mpv_set_property() (and related functions), and even before
@@ -997,6 +1058,8 @@ int mpv_set_option_string(mpv_handle *ctx, const char *name, const char *data);
  * Send a command to the player. Commands are the same as those used in
  * input.conf, except that this function takes parameters in a pre-split
  * form.
+ * 发送命令给播放器
+ * 命令和在  input.conf 里是一样的，只不过这个函数接收参数是 pre-split 形式（没看懂）
  *
  * The commands and their parameters are documented in input.rst.
  *
@@ -1146,6 +1209,8 @@ void mpv_abort_async_command(mpv_handle *ctx, uint64_t reply_userdata);
  * Set a property to a given value. Properties are essentially variables which
  * can be queried or set at runtime. For example, writing to the pause property
  * will actually pause or unpause playback.
+ * 设置属性
+ * 属性 == 播放时可以查询和设置的变量值
  *
  * If the format doesn't match with the internal format of the property, access
  * usually will fail with MPV_ERROR_PROPERTY_FORMAT. In some cases, the data
@@ -1203,6 +1268,7 @@ int mpv_set_property_async(mpv_handle *ctx, uint64_t reply_userdata,
 
 /**
  * Read the value of the given property.
+ * 读特定选项的值
  *
  * If the format doesn't match with the internal format of the property, access
  * usually will fail with MPV_ERROR_PROPERTY_FORMAT. In some cases, the data
@@ -1269,6 +1335,7 @@ int mpv_get_property_async(mpv_handle *ctx, uint64_t reply_userdata,
  * better update handling of a specific property. (For some properties, like
  * ``clock``, which shows the wall clock, this mechanism doesn't make too
  * much sense anyway.)
+ * 当特定属性变化时收到通知，会收到一个事件
  *
  * Property changes are coalesced: the change events are returned only once the
  * event queue becomes empty (e.g. mpv_wait_event() would block or return
@@ -1331,6 +1398,7 @@ int mpv_observe_property(mpv_handle *mpv, uint64_t reply_userdata,
  */
 int mpv_unobserve_property(mpv_handle *mpv, uint64_t registered_reply_userdata);
 
+// 事件 id
 typedef enum mpv_event_id {
     /**
      * Nothing happened. Happens on timeouts or sporadic wakeups.
@@ -1543,6 +1611,7 @@ typedef enum mpv_event_id {
 
 /**
  * Return a string describing the event. For unknown events, NULL is returned.
+ * 传入事件id, 返回字符串描述
  *
  * Note that all events actually returned by the API will also yield a non-NULL
  * string with this function.
@@ -1557,6 +1626,7 @@ typedef enum mpv_event_id {
  */
 const char *mpv_event_name(mpv_event_id event);
 
+// 事件属性
 typedef struct mpv_event_property {
     /**
      * Name of the property.
@@ -1589,6 +1659,7 @@ typedef struct mpv_event_property {
  * the comment after the value is the name of the log level as used for the
  * mpv_request_log_messages() function.
  * Unused numeric values are unused, but reserved for future use.
+ * 日志等级
  */
 typedef enum mpv_log_level {
     MPV_LOG_LEVEL_NONE  = 0,    /// "no"    - disable absolutely all messages
